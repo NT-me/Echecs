@@ -5,5 +5,9 @@ public class Main
 		Chessboard cb = new Chessboard();
 		cb.displayShell();
 
+		Player p = new Player();
+		cb.mouvement(1,p.getInput());
+		cb.displayShell();
+
 	}
 }

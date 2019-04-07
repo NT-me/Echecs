@@ -60,29 +60,35 @@ public class Chessboard
 		System.out.print("\n\\  abcdefgh\n");
 	}
 
+	public void mouvement(int color, int deplacement[]){
 
+		if (this.board[deplacement[0]][deplacement[1]].getColor() == color
+				&&  this.board[deplacement[0]][deplacement[1]].getPiece().isMovePossible(deplacement[0], deplacement[1], deplacement[2], deplacement[3])
+				&&  this.board[deplacement[2]][deplacement[3]].getPiece() == null){
+			Piece pi = this.board[deplacement[0]][deplacement[1]].getPiece();
 
-	public void mutation() 
-	{
-		for(int i = 0; i < 8; i++)
-		{
-			if(board[i][7].getPieceType().equals("Pion"))
-			{
-				int c = board[i][7].getPieceColor();
-				board[i][7].changePiece(new Reine(c));
-			}
+			this.board[deplacement[2]][deplacement[3]].changePiece(pi);
+			this.board[deplacement[0]][deplacement[1]].changePiece(null);
 		}
-
-		for(int i = 0; i < 8; i++)
-		{
-			if(board[i][0].getPieceType().equals("Pion"))
-			{
-				int c = board[i][7].getPieceColor();
-				board[i][0].changePiece(new Reine(c));
-			}
-		}
-		
 	}
 
+	public void mutation() {
+		for(int i = 0; i < 8; i++)
+		{
+			if(board[i][7].getTypePiece().equals("Pion"))
+			{
+				int c = board[i][7].getColor();
+				board[i][7].changePiece(new Reine(c));
+			}
+			for(i = 0; i < 8; i++)
+			{
+				if(board[i][0].getTypePiece().equals("Pion"))
+				{
+					int c = board[i][7].getColor();
+					board[i][0].changePiece(new Reine(c));
+				}
+			}
 
+		}
+	}
 }
