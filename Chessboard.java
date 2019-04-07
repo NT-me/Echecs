@@ -62,23 +62,27 @@ public class Chessboard
 
 
 
-	public void mutation() {
+	public void mutation() 
+	{
 		for(int i = 0; i < 8; i++)
 		{
-			if(board[i][7].getPiece().equals("Pion"))
+			if(board[i][7].getPieceType().equals("Pion"))
 			{
-				int c = board[i][7].getColor();
+				int c = board[i][7].getPieceColor();
 				board[i][7].changePiece(new Reine(c));
 			}
-			for(i = 0; i < 8; i++)
-			{
-				if(board[i][0].getPiece().equals("Pion"))
-				{
-					int c = board[i][7].getColor();
-					board[i][0].changePiece(new Reine(c));
-				}
-			}
-
 		}
+
+		for(int i = 0; i < 8; i++)
+		{
+			if(board[i][0].getPieceType().equals("Pion"))
+			{
+				int c = board[i][7].getPieceColor();
+				board[i][0].changePiece(new Reine(c));
+			}
+		}
+		
 	}
+
+
 }

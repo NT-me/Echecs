@@ -1,3 +1,5 @@
+import java.lang.Math;
+
 public class Pion extends Piece
 {
 	public Pion(int color)
@@ -19,9 +21,9 @@ public class Pion extends Piece
 	public boolean isMovePossible(int fx,int fy,int tx,int ty)
 	{
 		if( (fy == 1 && this.color == 0) || (fy == 6 && this.color == 1) )
-			return ( ( (tx == fx) && (ty - fy <= 2) && (ty - fy >= 1) ));
+			return ( ( (tx == fx) && (+Math.abs(ty - fy) <= 2) && (+Math.abs(ty - fy) >= 1) ));
 
-		return ( ( (tx == fx) && (ty - fy == 1) ));
+		return ( ( (tx == fx) && (+Math.abs(ty - fy) == 1) ));
 	}
 
 

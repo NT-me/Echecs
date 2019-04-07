@@ -36,11 +36,11 @@ public class Box
 		System.out.print("\u001B[0m");
 	}
 
-	public String getPiece() {
+	public String getPieceType() {
 		return piece.getClass().getSimpleName();
 	}
 
-	public int getColor(){
+	public int getPieceColor() {
 		return this.piece.getColor();
 	}
 }
