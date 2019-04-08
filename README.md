@@ -16,7 +16,7 @@ To Do :
   
   -killing adv pieces
   
-    --put it in a List of dead Pieces
+    -put it in a List of dead Pieces
     
   -Ai.java class playing making good inputs
   
