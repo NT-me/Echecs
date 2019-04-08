@@ -15,8 +15,8 @@ To Do :
   -left to be done isMovePossible() rules
   
   -killing adv pieces
-  
-    -put it in a List of dead Pieces
+      
+  -and put it in a List of dead Pieces
     
   -Ai.java class playing making good inputs
   
