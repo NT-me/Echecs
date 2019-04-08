@@ -1,71 +1,73 @@
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.Scanner;
+import java.util.NoSuchElementException;
 
 public class Player {
 
-    private String input;
     private ArrayList<Integer> undo;
 
+	int color;
+
     public Player(){
-        this.input = "";
+		this.color = 1;
     }
 
     private int[] setInput(String input){
-        String temp = input;
-        int res[]={-1,-1,-1,-1};
+        
+		int res[]={-1,-1,-1,-1};
         int fy, ty;
         String fx, tx;
+        
+		if(input.length() != 4) 
+		{
+			System.out.println("Input trop long");
+			return null;
+		}
 
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Veuillez saisir undo, ou position (ToX ToY/FromX FromY :");
-        temp = sc.nextLine();
-
-        String verifUn = Character.toString(temp.charAt(0));
-        String verifDeux = Character.toString(temp.charAt(1));
-        String verifTrois = Character.toString(temp.charAt(2));
-        String verifQuatre = Character.toString(temp.charAt(3));
-
-
-        // Création des listes
-        ArrayList<String> alphaB = new ArrayList<String>(8);
-        ArrayList<String> chiffre = new ArrayList<String>(8);
-
-        alphaB.add("a");alphaB.add("b");alphaB.add("c");alphaB.add("d");alphaB.add("e");alphaB.add("f");
-        alphaB.add("g");alphaB.add("h");
-
-        for (int i = 0; i<8; ++i){
-            String j = Integer.toString(i);
-            chiffre.add(j);
-        }
-
-        if (temp.equals("undo")){
+		if (input.equals("undo")){
             System.out.println("Vous avez fait undo");
+			//use undo fx etc . . .
         }
-
-        if (temp.contains(verifUn) && temp.contains(verifDeux) && temp.contains(verifTrois) &&  temp.contains(verifQuatre)){
-            fx=temp.substring(0, 1);
-            fy=Integer.parseInt(temp.substring(1, 2));
-
-            tx=temp.substring(2, 3);
-            ty=Integer.parseInt(temp.substring(3, 4));
-
-
-            res[0]=alphaB.indexOf(fx);
-            res[1]=fy;
-            res[2]=alphaB.indexOf(tx);
-            res[3]=ty;
-
-        }
-        else{
-            //error
-        }
+		else
+		{	
+			//conversions (- 1 a la fin car coordonées indexées 1
+			//donne la position dans l'alphapet de la lettre (grace a la table ASCII 'a' = 97)
+			res[0] = ((int)Character.toLowerCase(input.charAt(0)) - 96) - 1;
+			//equivalent de atoi();
+			res[1] = (char)(input.charAt(1) - '0') - 1;
+			res[2] = ((int)Character.toLowerCase(input.charAt(2)) - 96) - 1;
+			res[3] = (char)(input.charAt(3) - '0') - 1;
+		}
+		
+		for(int i = 0; i < 4; i++)
+		{
+			if(res[i] > 8 || res[i] < 0)
+			{
+				System.out.println("Mauvais format de coordonées");
+				return null;
+			}
+		}
 
         return res;
 
     }
 
     public int[] getInput(){
+
+		System.out.println("Veuillez choisir undo ou position \n (sous le format #x#x ou # est une lettre entre a et h et x un nombre entre 1 et 8)");
+		Scanner sc = new Scanner(System.in);
+		
+		String input;
+		try{
+			input = sc.next();
+			System.out.printf("#%s#\n",input);
+		} 
+		catch (NoSuchElementException e)
+		{
+			System.out.println("Vous n'avez rien tapez, Veuillez reessayer");
+			return null;
+		}
 
         return setInput(input);
     }

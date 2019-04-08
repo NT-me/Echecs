@@ -47,9 +47,9 @@ public class Chessboard
 	
 	public void displayShell()
 	{
-		for(int i = 0; i < 8; i++)
+		for(int i = 7; i >= 0; i--)
 		{	
-			System.out.printf("%d  ",8-i);
+			System.out.printf("%d  ",i+1);
 
 			for(int j = 0; j < 8; j++)
 			{
@@ -60,16 +60,33 @@ public class Chessboard
 		System.out.print("\n\\  abcdefgh\n");
 	}
 
-	public void mouvement(int color, int deplacement[]){
-
-		if (this.board[deplacement[0]][deplacement[1]].getColor() == color
-				&&  this.board[deplacement[0]][deplacement[1]].getPiece().isMovePossible(deplacement[0], deplacement[1], deplacement[2], deplacement[3])
-				&&  this.board[deplacement[2]][deplacement[3]].getPiece() == null){
+	public int mouvement(int color, int deplacement[]){
+		//errors
+		if(this.board[deplacement[0]][deplacement[1]].getPiece() == null) {
+			System.out.println("Pas de piece dans cette case");
+			return -1;
+		}
+		if(this.board[deplacement[0]][deplacement[1]].getColor() != color) {
+			System.out.println("Cette piece ne vous appartient pas");
+			return -1;
+		}
+		if (this.board[deplacement[0]][deplacement[1]].getPiece().isMovePossible(deplacement[0], deplacement[1], deplacement[2], deplacement[3]) == false)
+		{
+			System.out.println("Mouvement incorrect pour cette piece");
+			return -1;
+		}
+		
+		//main move
+		if (this.board[deplacement[2]][deplacement[3]].getPiece() == null) {
 			Piece pi = this.board[deplacement[0]][deplacement[1]].getPiece();
 
 			this.board[deplacement[2]][deplacement[3]].changePiece(pi);
 			this.board[deplacement[0]][deplacement[1]].changePiece(null);
+		} else {
+			//tuer la piece selon les regles 
+			//ptet la stocker dans une liste de pieces mortes
 		}
+		return 0;
 	}
 
 	public void mutation() {
@@ -80,15 +97,15 @@ public class Chessboard
 				int c = board[i][7].getColor();
 				board[i][7].changePiece(new Reine(c));
 			}
-			for(i = 0; i < 8; i++)
-			{
-				if(board[i][0].getTypePiece().equals("Pion"))
-				{
-					int c = board[i][7].getColor();
-					board[i][0].changePiece(new Reine(c));
-				}
-			}
-
 		}
+		for(int i = 0; i < 8; i++)
+		{
+			if(board[i][0].getTypePiece().equals("Pion"))
+			{
+				int c = board[i][7].getColor();
+				board[i][0].changePiece(new Reine(c));
+			}
+		}
+
 	}
 }

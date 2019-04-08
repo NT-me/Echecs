@@ -12,7 +12,7 @@ public class Cheval extends Piece
 	public void displayShell()
 	{
 		String s;
-		s = (color == 0 ? "\u001B[38;5;10m" : "\u001B[38;5;15m");
+		s = (color == 1 ? "\u001B[38;5;10m" : "\u001B[38;5;15m");
 		s += "C";
 		System.out.print(s);
 	}

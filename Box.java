@@ -1,6 +1,8 @@
 public class Box
 {
+	//backColor never to be touched
 	private int backColor;
+
 	private Piece piece;
 
 	public Box(int color)
@@ -23,7 +25,7 @@ public class Box
 		}
 		else
 		{
-			//Background set to WHITE
+			//Background set to BLACK
 			System.out.print("\u001B[48;5;0m");
 		}
 		
