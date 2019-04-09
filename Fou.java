@@ -18,6 +18,9 @@ public class Fou extends Piece
 	@Override
 	public boolean isMovePossible(int fx,int fy,int tx,int ty)
 	{
-		return false;
+		int dx = tx - fx;
+		int dy = ty - fy;
+		
+		return ( (dx == dy) || (dx == -dy) ) && (dx != 0) && (dy != 0);
 	}
 }

@@ -6,7 +6,8 @@ Main: Chessboard.java Box.java Piece.java Main.java Pion.java Fou.java Tour.java
 	jar cfe chess.jar $@ *.class
 
 edit: 
-	vim -p Main.java Chessboard.java Box.java Piece.java Pion.java Fou.java Tour.java Cheval.java Roi.java Reine.java Player.java
+	xfce4-terminal -x vim -p Piece.java Pion.java Fou.java Tour.java Cheval.java Roi.java Reine.java  &
+	vim -p Makefile Player.java Ai.java Main.java Chessboard.java Box.java
 
 clean:
 	rm -f *.class

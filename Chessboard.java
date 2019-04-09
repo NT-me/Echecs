@@ -59,6 +59,80 @@ public class Chessboard
 		}
 		System.out.print("\n\\  abcdefgh\n");
 	}
+	
+	public boolean traceLigne(int deplacement[]) {
+		if(deplacement[0] == deplacement[2]) {
+			if(deplacement[1] < deplacement[3]) {
+				for(int i = deplacement[1] + 1; i < deplacement[3]; i++) {
+					if(board[deplacement[0]][i].getPiece() != null)
+						return false;
+				}
+				return true;
+
+			} else {
+				for(int i = deplacement[3]; i < deplacement[1] - 1; i++) {
+					if(board[deplacement[0]][i].getPiece() != null)
+						return false;
+				}
+				return true;
+			}
+		}
+		if(deplacement[1] == deplacement[3]) {
+			if(deplacement[0] < deplacement[2]) {
+				for(int i = deplacement[0] + 1; i < deplacement[2]; i++) {
+					if(board[i][deplacement[1]].getPiece() != null)
+						return false;
+				}
+				return true;
+
+			} else {
+				for(int i = deplacement[2];i < deplacement[0] - 1; i++) {
+					if(board[i][deplacement[1]].getPiece() != null)
+						return false;
+				}
+				return true;
+			}
+		}
+		return false;
+
+	}
+	
+	public boolean traceDiag(int deplacement[]) {
+		//ne marche toujours pas !!!!
+		int dx = deplacement[2] - deplacement[0];
+		int dy = deplacement[3] - deplacement[1];
+		if(dx == dy) {
+			if(dx > 0) {
+				for(int i = 1; i < dx; i++) {
+					if(board[deplacement[0] + i][deplacement[1] + i].getPiece() != null)
+						return false;
+				}
+				return true;
+			} else {
+				for(int i = 1; i < -dx; i++) {
+					if(board[deplacement[0] - i][deplacement[1] - i].getPiece() != null)
+						return false;
+				}
+				return true;
+			}
+		}
+		if(dx == -dy) {
+			if(dx > 0) {
+				for(int i = 1; i < dx; i++) {
+					if(board[deplacement[0] + i][deplacement[1] - i].getPiece() != null)
+						return false;
+				}
+				return true;
+			} else {
+				for(int i = 1; i < -dx; i++) {
+					if(board[deplacement[0] - i][deplacement[1] + i].getPiece() != null)
+						return false;
+				}
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public int mouvement(int color, int deplacement[]){
 		//errors
@@ -80,9 +154,48 @@ public class Chessboard
 		if (this.board[deplacement[2]][deplacement[3]].getPiece() == null) {
 			Piece pi = this.board[deplacement[0]][deplacement[1]].getPiece();
 
+			if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Tour")
+				&& !traceLigne(deplacement) ) {
+				System.out.println("La tour passe au dessus d'une autre piece");
+				return -1;
+			}
+
 			this.board[deplacement[2]][deplacement[3]].changePiece(pi);
 			this.board[deplacement[0]][deplacement[1]].changePiece(null);
 		} else {
+			if(this.board[deplacement[2]][deplacement[3]].getColor() == color)
+			{
+				System.out.println("Vous ne pouvez pas manger vos propres pièces");
+				return -1;
+			}
+			//tuer la piece selon les regles 
+			//ptet la stocker dans une liste de pieces mortes
+		}
+		return 0;
+	}
+
+	public int mouvementAi(int color, int deplacement[]){
+		//errors
+		if(this.board[deplacement[0]][deplacement[1]].getPiece() == null) 
+			return -1;
+		if(this.board[deplacement[0]][deplacement[1]].getColor() != color) 
+			return -1;
+		if (this.board[deplacement[0]][deplacement[1]].getPiece().isMovePossible(deplacement[0], deplacement[1], deplacement[2], deplacement[3]) == false)
+			return -1;
+		
+		//main move
+		if (this.board[deplacement[2]][deplacement[3]].getPiece() == null) {
+			Piece pi = this.board[deplacement[0]][deplacement[1]].getPiece();
+
+			if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Tour")
+				&& !traceLigne(deplacement) ) 
+				return -1;
+
+			this.board[deplacement[2]][deplacement[3]].changePiece(pi);
+			this.board[deplacement[0]][deplacement[1]].changePiece(null);
+		} else {
+			if(this.board[deplacement[2]][deplacement[3]].getColor() == color)
+				return -1;
 			//tuer la piece selon les regles 
 			//ptet la stocker dans une liste de pieces mortes
 		}

@@ -1,6 +1,4 @@
 public class Cheval extends Piece
-
-	//PETIT PONEY TU ES TOUT PETIT ET TOUT GRIS PETIT PONEY
 {
 	public Cheval(int color)
 	{

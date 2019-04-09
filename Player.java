@@ -4,15 +4,23 @@ import java.util.Scanner;
 import java.util.NoSuchElementException;
 
 public class Player {
-
-    private ArrayList<Integer> undo;
-
-	int color;
-
-    public Player(){
+	
+	//ref sur le plateau
+	private Chessboard cb;
+	private int color;
+	
+	//Constructeurs 
+    public Player(Chessboard cb){
+		this.cb = cb;
 		this.color = 1;
     }
 
+	public Player(Chessboard cb,int color){
+		this.cb = cb;
+		this.color = color;
+	}
+	
+	//autres Methodes
     private int[] setInput(String input){
         
 		int res[]={-1,-1,-1,-1};
@@ -71,5 +79,23 @@ public class Player {
 
         return setInput(input);
     }
+
+	public int gameLoop()
+	{
+		int input[] = null;
+		int rv = -1;
+		do{
+			do{
+				input = this.getInput();
+			} while (input == null);
+
+			rv = cb.mouvement(this.color,input);
+		} while (rv == -1);
+
+		//affichage du tour
+		cb.displayShell();
+
+		return 0;
+	}
 
 }
