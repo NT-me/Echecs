@@ -20,13 +20,17 @@ public class Pion extends Piece
 	{
 		if(this.color == 0)
 		{
-			if( (fy == 1))
+			if(fy == 1)
+			{
 				return ( ( (tx == fx) && (ty - fy <= 2) && (ty - fy >= 1) ));
+			}
 			return ( ( (tx == fx) && (ty - fy == 1) ));
 
 		} else {
 			if(fy == 6)
+			{
 				return ( ( (tx == fx) && (ty - fy >= -2) && (ty - fy <= -1) ));
+			}
 			return ( ( (tx == fx) && (ty - fy == -1) ));
 		}
 	}

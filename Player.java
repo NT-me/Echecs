@@ -8,16 +8,19 @@ public class Player {
 	//ref sur le plateau
 	private Chessboard cb;
 	private int color;
+	private boolean alive;
 	
 	//Constructeurs 
     public Player(Chessboard cb){
 		this.cb = cb;
-		this.color = 1;
+		this.color = 0;
+		this.alive = true;
     }
 
 	public Player(Chessboard cb,int color){
 		this.cb = cb;
 		this.color = color;
+		this.alive = true;
 	}
 	
 	//autres Methodes
@@ -79,6 +82,9 @@ public class Player {
 
         return setInput(input);
     }
+	
+	public boolean getAlive()
+	{ return this.alive; }
 
 	public int gameLoop()
 	{
@@ -89,11 +95,26 @@ public class Player {
 				input = this.getInput();
 			} while (input == null);
 
-			rv = cb.mouvement(this.color,input);
+			rv = cb.mouvement(this.color,input,false);
 		} while (rv == -1);
 
 		//affichage du tour
 		cb.displayShell();
+		
+		this.alive = false;
+		Box[][] board = cb.getBoard();
+		for(int i = 0; i < 8; i++)
+		{
+			for(int j = 0; j < 8; j++)
+			{
+				if(board[j][i].getPiece() != null) {
+					if(board[j][i].getTypePiece().equals("Roi") 
+						&& board[j][i].getColor() == this.color)
+						this.alive = true;
+
+				}
+			}
+		}
 
 		return 0;
 	}

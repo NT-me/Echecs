@@ -18,6 +18,12 @@ public class Reine extends Piece
 	@Override
 	public boolean isMovePossible(int fx,int fy,int tx,int ty)
 	{
-		return false;
+		int dx = tx - fx;
+		int dy = ty - fy;
+
+		boolean fou = (dx == dy) ^ (dx == -dy);
+		boolean tour = (tx == fx) ^ (ty == fy);
+
+		return fou ^ tour;
 	}
 }

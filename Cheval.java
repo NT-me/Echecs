@@ -50,8 +50,6 @@ public class Cheval extends Piece
 			return true;
 		}
 
-		else {
-			return false;
-		}
+		return false;
 	}
 }

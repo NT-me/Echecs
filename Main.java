@@ -7,7 +7,7 @@ public class Main
 		Chessboard cb = new Chessboard();
 		cb.displayShell();
 	
-		System.out.println("Choisis une équipe (0 ou 1) / (vert ou blanc)");
+		System.out.println("Choisis une équipe (0 ou 1) / (blanc ou vert)");
 		Scanner sc = new Scanner(System.in);
 		int color;
 		String in = sc.next();
@@ -23,15 +23,17 @@ public class Main
 		Player p = new Player(cb,color);
 		Ai a = new Ai(cb,1 - color);
 
-		
-		p.gameLoop();
-		a.makeMove();
-		p.gameLoop();
-		a.makeMove();
-		p.gameLoop();
-		a.makeMove();
-		p.gameLoop();
-		a.makeMove();
-		
+		while(p.getAlive() == true && a.getAlive() == true)
+		{
+			p.gameLoop();
+			a.makeMove();
+		}
+
+		if(p.getAlive() == false)
+		{
+			System.out.println("You lost");
+		} else if(a.getAlive() == false) {
+			System.out.println("You won");
+		}
 	}
 }

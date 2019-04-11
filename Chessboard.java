@@ -1,9 +1,16 @@
+import java.util.List;
+import java.util.ArrayList;
+
 public class Chessboard
 {
 	private Box board[][];
 
+	private List<Piece> dead;
+
 	public Chessboard()
 	{
+		this.dead = new ArrayList<Piece>();
+
 		//ref sur tab 2D de Box
 		Box[][] tmp = new Box[8][8];
 		
@@ -44,6 +51,9 @@ public class Chessboard
 
 		this.board = tmp;
 	}
+
+	public Box[][] getBoard()
+	{ return this.board; }
 	
 	public void displayShell()
 	{
@@ -57,7 +67,14 @@ public class Chessboard
 			}
 			System.out.println();
 		}
-		System.out.print("\n\\  abcdefgh\n");
+		System.out.print("\n\\  abcdefgh\n\nPieces Mortes :\n");
+
+		for(Piece p : this.dead)
+		{
+			p.displayShell();
+			System.out.print("\u001B[0m");
+		}
+		System.out.println();
 	}
 	
 	public boolean traceLigne(int deplacement[]) {
@@ -70,7 +87,7 @@ public class Chessboard
 				return true;
 
 			} else {
-				for(int i = deplacement[3]; i < deplacement[1] - 1; i++) {
+				for(int i = deplacement[3] + 1; i < deplacement[1]; i++) {
 					if(board[deplacement[0]][i].getPiece() != null)
 						return false;
 				}
@@ -86,7 +103,7 @@ public class Chessboard
 				return true;
 
 			} else {
-				for(int i = deplacement[2];i < deplacement[0] - 1; i++) {
+				for(int i = deplacement[2] + 1;i < deplacement[0]; i++) {
 					if(board[i][deplacement[1]].getPiece() != null)
 						return false;
 				}
@@ -98,7 +115,7 @@ public class Chessboard
 	}
 	
 	public boolean traceDiag(int deplacement[]) {
-		//ne marche toujours pas !!!!
+		//verifie si il y a une case dans la diagonale d'un point a un autre
 		int dx = deplacement[2] - deplacement[0];
 		int dy = deplacement[3] - deplacement[1];
 		if(dx == dy) {
@@ -116,7 +133,7 @@ public class Chessboard
 				return true;
 			}
 		}
-		if(dx == -dy) {
+		else if(dx == -dy) {
 			if(dx > 0) {
 				for(int i = 1; i < dx; i++) {
 					if(board[deplacement[0] + i][deplacement[1] - i].getPiece() != null)
@@ -131,76 +148,80 @@ public class Chessboard
 				return true;
 			}
 		}
-		return false;
+		else return false;
 	}
-
-	public int mouvement(int color, int deplacement[]){
+	
+	//boolean ai = true si c'est l'ia qui joue pour eviter ses messages d'erreurs
+	public int mouvement(int color, int deplacement[],boolean ai){
 		//errors
 		if(this.board[deplacement[0]][deplacement[1]].getPiece() == null) {
-			System.out.println("Pas de piece dans cette case");
+			if(!ai) System.out.println("Pas de piece dans cette case");
 			return -1;
 		}
 		if(this.board[deplacement[0]][deplacement[1]].getColor() != color) {
-			System.out.println("Cette piece ne vous appartient pas");
+			if(!ai) System.out.println("Cette piece ne vous appartient pas");
 			return -1;
 		}
 		if (this.board[deplacement[0]][deplacement[1]].getPiece().isMovePossible(deplacement[0], deplacement[1], deplacement[2], deplacement[3]) == false)
 		{
-			System.out.println("Mouvement incorrect pour cette piece");
+			if(!ai) System.out.println("Mouvement incorrect pour cette piece");
+			return -1;
+		}
+
+		//cas special de la tour
+		if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Tour")
+			&& !traceLigne(deplacement) ) {
+			if(!ai) System.out.println("La tour passe au dessus d'une autre piece");
 			return -1;
 		}
 		
-		//main move
-		if (this.board[deplacement[2]][deplacement[3]].getPiece() == null) {
-			Piece pi = this.board[deplacement[0]][deplacement[1]].getPiece();
+		//cas special du fou
+		if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Fou")
+			&& !traceDiag(deplacement) ) {
+			if(!ai) System.out.println("Le Fou passe au dessus d'une autre piece");
+			return -1;
+		}
 
-			if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Tour")
-				&& !traceLigne(deplacement) ) {
-				System.out.println("La tour passe au dessus d'une autre piece");
+		//cas special de la reine
+		if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Reine") ) {
+			boolean test;
+			//test si le mouvement est en ligne ou en diagonale
+			if((deplacement[0] == deplacement[2]) ^ (deplacement[1] == deplacement[3])) {
+				test = traceLigne(deplacement);
+			} else {
+				test = traceDiag(deplacement);
+			}
+
+			if(!test) { 
+				if(!ai) System.out.println("La Reine passe au dessus d'une autre piece");
 				return -1;
 			}
+		}
+		
+		//main move
+		Piece pi = this.board[deplacement[0]][deplacement[1]].getPiece();
+		
+		if (this.board[deplacement[2]][deplacement[3]].getPiece() == null) {
 
 			this.board[deplacement[2]][deplacement[3]].changePiece(pi);
 			this.board[deplacement[0]][deplacement[1]].changePiece(null);
+		
 		} else {
+			//Si il y a une piece dans la case d'arrivée
 			if(this.board[deplacement[2]][deplacement[3]].getColor() == color)
 			{
-				System.out.println("Vous ne pouvez pas manger vos propres pièces");
+				if(!ai) System.out.println("Vous ne pouvez pas manger vos propres pièces");
 				return -1;
 			}
-			//tuer la piece selon les regles 
-			//ptet la stocker dans une liste de pieces mortes
-		}
-		return 0;
-	}
-
-	public int mouvementAi(int color, int deplacement[]){
-		//errors
-		if(this.board[deplacement[0]][deplacement[1]].getPiece() == null) 
-			return -1;
-		if(this.board[deplacement[0]][deplacement[1]].getColor() != color) 
-			return -1;
-		if (this.board[deplacement[0]][deplacement[1]].getPiece().isMovePossible(deplacement[0], deplacement[1], deplacement[2], deplacement[3]) == false)
-			return -1;
-		
-		//main move
-		if (this.board[deplacement[2]][deplacement[3]].getPiece() == null) {
-			Piece pi = this.board[deplacement[0]][deplacement[1]].getPiece();
-
-			if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Tour")
-				&& !traceLigne(deplacement) ) 
-				return -1;
-
+			//si c'est une piece adverse
+			//on la stocke dans une liste de pieces mortes 
+			this.dead.add(this.board[deplacement[2]][deplacement[3]].getPiece());
 			this.board[deplacement[2]][deplacement[3]].changePiece(pi);
 			this.board[deplacement[0]][deplacement[1]].changePiece(null);
-		} else {
-			if(this.board[deplacement[2]][deplacement[3]].getColor() == color)
-				return -1;
-			//tuer la piece selon les regles 
-			//ptet la stocker dans une liste de pieces mortes
 		}
 		return 0;
 	}
+
 
 	public void mutation() {
 		for(int i = 0; i < 8; i++)

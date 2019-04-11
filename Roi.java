@@ -18,6 +18,10 @@ public class Roi extends Piece
 	@Override
 	public boolean isMovePossible(int fx,int fy,int tx,int ty)
 	{
-		return false;
+		int dx = tx - fx;
+		int dy = ty - fy;
+		
+		if(dx == 0 && dy == 0) return false;
+		return (dx <= 1) && (dx >= -1) && (dy <= 1) && (dy >= -1);
 	}
 }

@@ -21,6 +21,8 @@ public class Fou extends Piece
 		int dx = tx - fx;
 		int dy = ty - fy;
 		
-		return ( (dx == dy) || (dx == -dy) ) && (dx != 0) && (dy != 0);
+		//si a = b et a = -b alors a = 0 et b = 0
+		//d'ou le Xor 
+		return (dx == dy) ^ (dx == -dy) ;
 	}
 }
