@@ -7,6 +7,7 @@ public class Chessboard
 
 	private List<Piece> dead;
 
+
 	public Chessboard()
 	{
 		this.dead = new ArrayList<Piece>();
@@ -218,6 +219,7 @@ public class Chessboard
 			this.dead.add(this.board[deplacement[2]][deplacement[3]].getPiece());
 			this.board[deplacement[2]][deplacement[3]].changePiece(pi);
 			this.board[deplacement[0]][deplacement[1]].changePiece(null);
+
 		}
 		return 0;
 	}
@@ -226,20 +228,25 @@ public class Chessboard
 	public void mutation() {
 		for(int i = 0; i < 8; i++)
 		{
+			try{
 			if(board[i][7].getTypePiece().equals("Pion"))
 			{
 				int c = board[i][7].getColor();
 				board[i][7].changePiece(new Reine(c));
 			}
+		}catch (NullPointerException e){}
 		}
 		for(int i = 0; i < 8; i++)
 		{
-			if(board[i][0].getTypePiece().equals("Pion"))
-			{
-				int c = board[i][7].getColor();
-				board[i][0].changePiece(new Reine(c));
-			}
+			try{
+				if(board[i][0].getTypePiece().equals("Pion"))
+				{
+					int c = board[i][7].getColor();
+					board[i][0].changePiece(new Reine(c));
+				}
+			}catch (NullPointerException e){}
 		}
 
 	}
 }
+

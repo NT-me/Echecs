@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.Scanner;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class Player {
 	
@@ -9,18 +6,21 @@ public class Player {
 	private Chessboard cb;
 	private int color;
 	private boolean alive;
+	private ArrayList<Chessboard> UndoPile;
 	
 	//Constructeurs 
     public Player(Chessboard cb){
 		this.cb = cb;
 		this.color = 0;
 		this.alive = true;
+		this.UndoPile = new ArrayList<Chessboard>();
     }
 
 	public Player(Chessboard cb,int color){
 		this.cb = cb;
 		this.color = color;
 		this.alive = true;
+		this.UndoPile = new ArrayList<Chessboard>();
 	}
 	
 	//autres Methodes
@@ -37,8 +37,8 @@ public class Player {
 		}
 
 		if (input.equals("undo")){
-            System.out.println("Vous avez fait undo");
-			//use undo fx etc . . .
+            res[0]=999;
+			return res;
         }
 		else
 		{	
@@ -95,11 +95,27 @@ public class Player {
 				input = this.getInput();
 			} while (input == null);
 
-			rv = cb.mouvement(this.color,input,false);
+			if (input[0]==999){
+				try{
+					System.out.println("Vous avez fait undo");
+					cb = undo();
+					//affichage du tour
+					cb.displayShell();
+					return 0;
+				}catch (IndexOutOfBoundsException e){
+					System.out.print("Vous ne pouvez pas retourner plus loin en arrière ! \n");
+				}
+
+			}
+			else{
+				rv = cb.mouvement(this.color,input,false);
+			}
+
 		} while (rv == -1);
 
 		//affichage du tour
 		cb.displayShell();
+		this.UndoPile.add(cb);
 		
 		this.alive = false;
 		Box[][] board = cb.getBoard();
@@ -115,8 +131,13 @@ public class Player {
 				}
 			}
 		}
-
 		return 0;
+	}
+
+	private Chessboard undo(){
+		Chessboard res = this.UndoPile.get(1);
+    	this.UndoPile.remove(0);
+    	return res;
 	}
 
 }
