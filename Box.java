@@ -39,7 +39,11 @@ public class Box
 	}
 
 	public String getTypePiece() {
-		return piece.getClass().getSimpleName();
+		try {
+			return piece.getClass().getSimpleName();
+		}catch (NullPointerException e){
+			return null;
+		}
 	}
 
 	public Piece getPiece(){

@@ -22,16 +22,16 @@ public class Pion extends Piece
 		{
 			if(fy == 1)
 			{
-				return ( ( (tx == fx) && (ty - fy <= 2) && (ty - fy >= 1) ));
+				return ( ( (tx == fx) && (ty - fy <= 2) && (ty - fy >= 1) )|| ((tx - fx == 1) || (tx - fx == -1) ) && (ty - fy == 1));
 			}
-			return ( ( (tx == fx) && (ty - fy == 1) ));
+			return ( ( (tx == fx) && (ty - fy == 1) ) || ((tx - fx == 1) || (tx - fx == -1) ) && (ty - fy == 1) );
 
 		} else {
 			if(fy == 6)
 			{
-				return ( ( (tx == fx) && (ty - fy >= -2) && (ty - fy <= -1) ));
+				return ( ( (tx == fx) && (ty - fy >= -2) && (ty - fy <= -1) )|| ((tx - fx == 1) || (tx - fx == -1) ) && (ty - fy == -1));
 			}
-			return ( ( (tx == fx) && (ty - fy == -1) ));
+			return ( ( (tx == fx) && (ty - fy == -1) )|| ((tx - fx == 1) || (tx - fx == -1) ) && (ty - fy == -1));
 		}
 	}
 

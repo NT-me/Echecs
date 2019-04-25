@@ -1,5 +1,7 @@
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Chessboard
 {
@@ -7,6 +9,7 @@ public class Chessboard
 
 	private List<Piece> dead;
 
+	private Stack<int[]> pileUndo;
 
 	public Chessboard()
 	{
@@ -51,6 +54,7 @@ public class Chessboard
 		tmp[4][7].changePiece(new Reine(1));
 
 		this.board = tmp;
+		this.pileUndo = new Stack<>();
 	}
 
 	public Box[][] getBoard()
@@ -134,7 +138,8 @@ public class Chessboard
 				return true;
 			}
 		}
-		else if(dx == -dy) {
+		else if(dx == -dy)
+		{
 			if(dx > 0) {
 				for(int i = 1; i < dx; i++) {
 					if(board[deplacement[0] + i][deplacement[1] - i].getPiece() != null)
@@ -183,6 +188,18 @@ public class Chessboard
 			return -1;
 		}
 
+		//cas spécial du pion
+		if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Pion")){
+			if ( (deplacement[0] == deplacement[2]) && board[deplacement[2]][deplacement[3]].getTypePiece() != null){
+				if (!ai) System.out.print("Un pion ne peut pas prendre devant lui !\n");
+				return -1;
+			}
+			if ( (deplacement[0] - deplacement[2] == 1) || (deplacement[0] - deplacement[2] == -1) && board[deplacement[2]][deplacement[3]].getTypePiece() == null){
+				if (!ai) System.out.print("Un pion ne peut pas se déplacer en diagonale si la case est vide ! \n");
+				return -1;
+			}
+		}
+
 		//cas special de la reine
 		if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Reine") ) {
 			boolean test;
@@ -221,6 +238,8 @@ public class Chessboard
 			this.board[deplacement[0]][deplacement[1]].changePiece(null);
 
 		}
+
+		setUndo(deplacement);
 		return 0;
 	}
 
@@ -248,5 +267,34 @@ public class Chessboard
 		}
 
 	}
+
+	public void setUndo(int a[]){
+		if (a[0]!= 999){
+			this.pileUndo.push(a);
+		}
+	}
+
+	public void doUndo(){
+		int dep[]= {-1,-1,-1,-1};
+		int tmp[]= {-1,-1,-1,-1};
+
+		try {
+			dep = this.pileUndo.pop();
+		}catch (EmptyStackException e){
+			System.out.print("Vous ne pouvez pas retourner plus loin");
+		}
+		tmp[0] = dep[2];
+		tmp[1] = dep[3];
+		tmp[2] = dep[0];
+		tmp[3] = dep[1];
+
+		Piece p = this.board[tmp[0]][tmp[1]].getPiece();
+
+		System.out.printf("-> %d%d%d%d", tmp[0], tmp[1], tmp[2], tmp[3]);
+
+		this.board[tmp[0]][tmp[1]].changePiece(null);
+		this.board[tmp[2]][tmp[3]].changePiece(p);
+	}
+
 }
 
