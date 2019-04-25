@@ -10,8 +10,6 @@ Done :
   
   -Almost all isMovePossible() rules
 
-To Do :
-
   -left to be done isMovePossible() rules
   
   -killing adv pieces
@@ -21,3 +19,9 @@ To Do :
   -Ai.java class playing making good inputs
   
   -Proper Main
+  
+To Do :
+
+- mat
+- undo (not fully runnable)
+
