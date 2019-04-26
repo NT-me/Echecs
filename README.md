@@ -1,7 +1,7 @@
 # Projet de JAVA  
-## Manuel utilisateur
+## Manuel utilisateur [fr]
 
-Pour lancer le programme l'utilisateur peut soit utiliser la commande `make` s'il souhaite recompiler le projet, soit `java -jar chess.jar pour le lancer plus classiquement.  
+Pour lancer le programme l'utilisateur peut soit utiliser la commande `make` s'il souhaite recompiler le projet, soit `java -jar chess.jar` pour le lancer plus classiquement.  
 
 Ensuite l'utilisateur devra choisir s'il veut jouer contre une IA ou deux IA.  
 
@@ -17,7 +17,23 @@ a2a3 (Si le joueur est blanc)
 
 Une fois que l'un des joueurs a gagné le jeu se ferme automatiquement.
 
-## Manuel technique
+## User manuel [en]
+
+For run the soft you need to use the command `make` if you want to compile again or just `java -jar chess.jar` for run this more classicaly.
+
+He gonna ask you (in french) how many AIs you want, if you answer "one" he gonna launche the game Ai (We name her Mickey) against you. If you answer "two" two AIs (Mickey and Kasparof) gonne play together without you.
+
+For play you need to enter things with the format :
+`#x#x` with '#' letter a->h and 'x' 1->8. The first couple is origin pos, and the second is destination.
+
+
+**Example** :
+
+```
+a2a3 (If the player is white)
+```
+
+## Manuel technique [only in french]
 
 ### Les pièces 
 
