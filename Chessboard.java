@@ -156,52 +156,69 @@ public class Chessboard
 		}
 		else return false;
 	}
-	
-	//boolean ai = true si c'est l'ia qui joue pour eviter ses messages d'erreurs
-	public int mouvement(int color, int deplacement[],boolean ai){
+
+	public boolean movePossible(int color, int deplacement[],boolean ai){
 		//errors
 		if(this.board[deplacement[0]][deplacement[1]].getPiece() == null) {
 			if(!ai) System.out.println("Pas de piece dans cette case");
-			return -1;
+			return false;
 		}
 		if(this.board[deplacement[0]][deplacement[1]].getColor() != color) {
 			if(!ai) System.out.println("Cette piece ne vous appartient pas");
-			return -1;
+			return false;
 		}
 		if (this.board[deplacement[0]][deplacement[1]].getPiece().isMovePossible(deplacement[0], deplacement[1], deplacement[2], deplacement[3]) == false)
 		{
 			if(!ai) System.out.println("Mouvement incorrect pour cette piece");
-			return -1;
+			return false;
 		}
 
 		//cas special de la tour
-		if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Tour")
+		if(this.board[deplacement[0]][deplacement[1]].getTypePiece().equals("Tour")
 			&& !traceLigne(deplacement) ) {
 			if(!ai) System.out.println("La tour passe au dessus d'une autre piece");
-			return -1;
+			return false;
 		}
 		
 		//cas special du fou
-		if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Fou")
+		if(this.board[deplacement[0]][deplacement[1]].getTypePiece().equals("Fou")
 			&& !traceDiag(deplacement) ) {
 			if(!ai) System.out.println("Le Fou passe au dessus d'une autre piece");
-			return -1;
+			return false;
 		}
 
 		//cas spécial du pion
-		if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Pion")){
+		//a retravailler
+		if(this.board[deplacement[0]][deplacement[1]].getTypePiece().equals("Pion")){
 			if ( (deplacement[0] == deplacement[2]) && board[deplacement[2]][deplacement[3]].getTypePiece() != null){
 				if (!ai) System.out.print("Un pion ne peut pas prendre devant lui !\n");
-				return -1;
+				return false;
 			}
-			if ( (deplacement[0] - deplacement[2] == 1) || (deplacement[0] - deplacement[2] == -1) && board[deplacement[2]][deplacement[3]].getTypePiece() == null){
-				if (!ai) System.out.print("Un pion ne peut pas se déplacer en diagonale si la case est vide ! \n");
-				return -1;
+
+			int dx = deplacement[2] - deplacement[0];
+			int dy = deplacement[3] - deplacement[1];
+			
+			if( dx == dy ^ dx == -dy)
+			{
+				//alors mouvement en diagonale
+				if(dy == 1 && color == 0)
+				{
+					if(this.board[deplacement[2]][deplacement[3]].getTypePiece() == null)
+						return false;
+					return true;
+				}
+				if(dy == -1 && color == 1)
+				{
+					if(this.board[deplacement[2]][deplacement[3]].getTypePiece() == null)
+						return false;
+					return true;
+				}
+				return false;
 			}
-		}
+		} //fin if pion
 
 		//cas special de la reine
-		if(board[deplacement[0]][deplacement[1]].getTypePiece().equals("Reine") ) {
+		if(this.board[deplacement[0]][deplacement[1]].getTypePiece().equals("Reine") ) {
 			boolean test;
 			//test si le mouvement est en ligne ou en diagonale
 			if((deplacement[0] == deplacement[2]) ^ (deplacement[1] == deplacement[3])) {
@@ -212,10 +229,28 @@ public class Chessboard
 
 			if(!test) { 
 				if(!ai) System.out.println("La Reine passe au dessus d'une autre piece");
-				return -1;
+				return false;
+			}
+		} //fin if reine
+		
+		//ne pas manger ses cooequipiers
+		if(this.board[deplacement[2]][deplacement[3]].getTypePiece() != null){
+			if(this.board[deplacement[2]][deplacement[3]].getColor() == color)
+			{
+				if(!ai) System.out.println("Vous ne pouvez pas manger vos propres pièces");
+				return false;
 			}
 		}
+
+		return true;
+	}
+	
+	//boolean ai = true si c'est l'ia qui joue pour eviter ses messages d'erreurs
+	public int mouvement(int color, int deplacement[],boolean ai){
 		
+		if(this.movePossible(color,deplacement,ai) == false)
+			return -1;
+
 		//main move
 		Piece pi = this.board[deplacement[0]][deplacement[1]].getPiece();
 		
@@ -226,11 +261,6 @@ public class Chessboard
 		
 		} else {
 			//Si il y a une piece dans la case d'arrivée
-			if(this.board[deplacement[2]][deplacement[3]].getColor() == color)
-			{
-				if(!ai) System.out.println("Vous ne pouvez pas manger vos propres pièces");
-				return -1;
-			}
 			//si c'est une piece adverse
 			//on la stocke dans une liste de pieces mortes 
 			this.dead.add(this.board[deplacement[2]][deplacement[3]].getPiece());
@@ -269,9 +299,7 @@ public class Chessboard
 	}
 
 	public void setUndo(int a[]){
-		if (a[0]!= 999){
-			this.pileUndo.push(a);
-		}
+		this.pileUndo.push(a);
 	}
 
 	public void doUndo(){

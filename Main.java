@@ -16,7 +16,7 @@ public class Main
 			System.out.println("Choisis une équipe (0 ou 1) / (noir ou vert)");
 
 			in = sc.next();
-			if(in.equals("noir") || in.equals("0"))
+			if(in.equals("blanc") || in.equals("0"))
 				color = 0;
 			else if (in.equals("vert") || in.equals("1"))
 				color = 1;
@@ -31,13 +31,21 @@ public class Main
 			while(p.getAlive() == true && a.getAlive() == true)
 			{
 
-				if (color == 1){ // Cas ou le joueur est vert donc commence
-					p.gameLoop();
+				if (color == 0){ // Cas ou le joueur est blanc donc commence
+					int val = 1;
+					do{
+						val = p.gameLoop();
+						if(val == 1) cb.displayShell();
+					} while (val != 0);
 					a.makeMove();
 				}
 				else {
 					a.makeMove();
-					p.gameLoop();
+					int val = 1;
+					do{
+						val = p.gameLoop();
+						if(val == 1) cb.displayShell();
+					} while (val != 0);
 				}
 				cb.mutation();
 			}

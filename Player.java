@@ -54,7 +54,7 @@ public class Player {
 		
 		for(int i = 0; i < 4; i++)
 		{
-			if(res[i] > 8 || res[i] < 0)
+			if(res[i] > 7 || res[i] < 0)
 			{
 				System.out.println("Mauvais format de coordonées");
 				return null;
@@ -98,15 +98,16 @@ public class Player {
 			if (input[0]==999){
 					System.out.println("Vous avez fait undo");
 					cb.doUndo();
-					return 0;
+					return 1;
 			}
-				rv = cb.mouvement(this.color,input,false);
+			rv = cb.mouvement(this.color,input,false);
 
 		} while (rv == -1);
 
 		//affichage du tour
 		cb.displayShell();
-
+		
+		//test de vie
 		this.alive = false;
 		Box[][] board = cb.getBoard();
 		for(int i = 0; i < 8; i++)
