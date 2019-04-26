@@ -1,5 +1,8 @@
 import java.util.*;
 
+/**
+ * Classe de l'IA
+ */
 public class Player {
 	
 	//ref sur le plateau
@@ -8,9 +11,9 @@ public class Player {
 	private boolean alive;
 
 
-
-	
-	//Constructeurs 
+	/**
+	 * Constructeur
+	 */
     public Player(Chessboard cb){
 		this.cb = cb;
 		this.color = 0;
@@ -18,13 +21,20 @@ public class Player {
 
     }
 
+	/**
+	 * Constructeur
+	 */
 	public Player(Chessboard cb,int color){
 		this.cb = cb;
 		this.color = color;
 		this.alive = true;
 	}
 	
-	//autres Methodes
+	/**
+	 * Modifie l'input pour le jeu
+	 * @param input L'input sous forme de string
+	 * @return l'input sous forme de 4 int
+	 */
     private int[] setInput(String input){
         
 		int res[]={-1,-1,-1,-1};
@@ -64,7 +74,11 @@ public class Player {
         return res;
 
     }
-
+	
+	/**
+	 * Demande l'input et le traduit
+	 * @return l'input du joueur en 4 int
+	 */
     public int[] getInput(){
 
 		System.out.println("Veuillez choisir undo ou position \n (sous le format #x#x ou # est une lettre entre a et h et x un nombre entre 1 et 8)");
@@ -83,9 +97,16 @@ public class Player {
         return setInput(input);
     }
 	
+	/**
+	 * Accesseur de alive
+	 * @return alive
+	 */
 	public boolean getAlive()
 	{ return this.alive; }
 	
+	/**
+	 * test si l'ia est en vie
+	 */
 	private void testAlive()
 	{
 		this.alive = false;
@@ -104,6 +125,9 @@ public class Player {
 		}
 	}
 
+	/**
+	 * Tour de jeu de l'IA
+	 */
 	public int gameLoop()
 	{
 		this.testAlive();

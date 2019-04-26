@@ -1,17 +1,26 @@
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Classe de l'IA
+ */
 public class Ai
 {
 	private Chessboard cb;
 	private int color;
 	private boolean alive;
-
+	
+	/**
+	 * Constructeur
+	 */
 	public Ai(Chessboard cb)
 	{
 		this.cb = cb;
 		this.alive = true;
 	}
 	
+	/**
+	 * Constructeur
+	 */
 	public Ai(Chessboard cb,int color)
 	{
 		this.cb = cb;
@@ -19,9 +28,16 @@ public class Ai
 		this.alive = true;
 	}
 
+	/**
+	 * Accesseur de alive
+	 * @return alive
+	 */
 	public boolean getAlive()
 	{ return this.alive; }
 	
+	/**
+	 * test si l'ia est en vie
+	 */
 	private void testAlive()
 	{
 		this.alive = false;
@@ -39,7 +55,10 @@ public class Ai
 			}
 		}
 	}
-
+	
+	/**
+	 * Tour de jeu de l'IA
+	 */
 	public void makeMove() {
 		this.testAlive();
 		if(this.alive == false) return;

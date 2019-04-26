@@ -3,15 +3,21 @@ import java.lang.ArrayIndexOutOfBoundsException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Stack;
-
+/**
+ * Classe gerant la partie Jeu
+ */
 public class Chessboard
 {
+	//Plateau de jeu
 	private Box board[][];
-
+	//Pile de pieces mortes
 	private Stack<Piece> dead;
-
+	//Pile d'evenement
 	private Stack<int[]> pileUndo;
 
+	/**
+	 * Constructeur de Chessboard
+	 */
 	public Chessboard()
 	{
 		this.dead = new Stack<Piece>();
@@ -59,10 +65,16 @@ public class Chessboard
 		this.board = tmp;
 		this.pileUndo = new Stack<>();
 	}
-
+	
+	/**
+	 * Accesseur de board
+	 */
 	public Box[][] getBoard()
 	{ return this.board; }
 	
+	/**
+	 * Affiche le plateau de jeu en shell
+	 */
 	public void displayShell()
 	{
 		for(int i = 7; i >= 0; i--)
@@ -85,6 +97,11 @@ public class Chessboard
 		System.out.println();
 	}
 	
+	/**
+     * Teste si la piece passe au dessus d'une autre dans la ligne
+	 * @param deplacement coordonees du deplacement
+	 * @return false si la piece passe au dessus d'une autre
+     */
 	public boolean traceLigne(int deplacement[]) {
 		if(deplacement[0] == deplacement[2]) {
 			if(deplacement[1] < deplacement[3]) {
@@ -121,7 +138,12 @@ public class Chessboard
 		return false;
 
 	}
-	
+
+	/**
+     * Teste si la piece passe au dessus d'une autre dans la diagonale
+	 * @param deplacement coordonees du deplacement
+	 * @return false si la piece passe au dessus d'une autre
+     */
 	public boolean traceDiag(int deplacement[]) {
 		//verifie si il y a une case dans la diagonale d'un point a un autre
 		int dx = deplacement[2] - deplacement[0];
@@ -159,7 +181,13 @@ public class Chessboard
 		}
 		else return false;
 	}
-
+	/**
+	 * Test si le mouvement est possible en prenant compte les autres pieces du plateau
+	 * @param 	color 		Couleur de la piece
+	 * @param	deplacement	Coordonées de deplacement
+	 * @param	ai			Booleen pour enlever les affichages
+	 * @return true si le mouvement est possible en prenant toutes les pieces en compte
+	 */
 	public boolean movePossible(int color, int deplacement[],boolean ai){
 		//errors
 		if(this.board[deplacement[0]][deplacement[1]].getPiece() == null) {
@@ -251,7 +279,14 @@ public class Chessboard
 		return true;
 	}
 	
-	//boolean ai = true si c'est l'ia qui joue pour eviter ses messages d'erreurs
+	/**
+	 * Deplace la piece si le mouvement est possible
+	 * @param 	color 		Couleur de la piece
+	 * @param	deplacement	Coordonées de deplacement
+	 * @param	ai			Booleen pour enlever les affichages
+	 * @return -1 si le mouvement est impossible en prenant toutes les pieces en compte
+	 * @return 0 si le mouvement s'effectue normalement
+	 */
 	public int mouvement(int color, int deplacement[],boolean ai){
 		
 		if(this.movePossible(color,deplacement,ai) == false)
@@ -286,17 +321,19 @@ public class Chessboard
 		return 0;
 	}
 
-
+	/**
+	 * Transforme les pions arrivant au bout du plateau
+	 */
 	public void mutation() {
 		for(int i = 0; i < 8; i++)
 		{
 			try{
-			if(board[i][7].getTypePiece().equals("Pion"))
-			{
-				int c = board[i][7].getColor();
-				board[i][7].changePiece(new Reine(c));
-			}
-		}catch (NullPointerException e){}
+				if(board[i][7].getTypePiece().equals("Pion"))
+				{
+					int c = board[i][7].getColor();
+					board[i][7].changePiece(new Reine(c));
+				}
+			}catch (NullPointerException e){}
 		}
 		for(int i = 0; i < 8; i++)
 		{
@@ -310,11 +347,16 @@ public class Chessboard
 		}
 
 	}
-
+	/**
+	 * Empile le tour
+	 */
 	public void setUndo(int a[]){
 		this.pileUndo.push(a);
 	}
-
+	
+	/**
+	 * Depile le tour
+	 */
 	public void doUndo(){
 		int dep[]= {-1,-1,-1,-1};
 		int tmp[]= {-1,-1,-1,-1};
@@ -368,6 +410,11 @@ public class Chessboard
 		}
 	}
 	
+	/**
+	 * Trouve le Roi de la couleur c
+	 * @param	c	couleur du roi a trouver
+	 * @return	les coordonnées du roi de couleur c
+	 */
 	public int[] findKing(int c){
         //Trouve le roi
 		Piece king;
@@ -387,7 +434,12 @@ public class Chessboard
 		
 		return tmp;
 	}
-
+	/**
+	 * Detecte l'echec
+	 * @param 	roi	Coordonnées du roi
+	 * @param 	c	Couleur du roi
+	 * @return	true si echec
+	 */
 	public boolean areYouInEchec(int[] roi,int c){
 		
     	int[] tmp = new int[4];
@@ -407,7 +459,7 @@ public class Chessboard
         return false;
     }
 
-	public boolean areYouInMat(int c) {
+	private boolean areYouInMat(int c) {
 		
 		int[] k = this.findKing(c);
 
@@ -449,6 +501,11 @@ public class Chessboard
 		return false;
 	}
 
+	/**
+	 * Detecte l'echec et mat
+	 * @param 	c	Couleur du roi
+	 * @return	true si echec et mat
+	 */
 	public boolean areYouInEchecEtMat(int c)
 	{
 		if(areYouInMat(c) == false) return false;
