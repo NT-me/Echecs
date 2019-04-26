@@ -1,8 +1,12 @@
+/**
+	 * 
+	 *class représentant le Pion d'un jeu d'échec
+	 */
 public class Pion extends Piece
 {
 	/**
-	 *
-	 *
+	 * constructeur de la class Pion initialise la couleur du Pion
+	 *@param color couleur du pion
 	 */
 	public Pion(int color)
 	{
@@ -10,6 +14,10 @@ public class Pion extends Piece
 		this.color = color;
 	}
 	
+	/**
+	 *affiche la piece "Pion" sur le plateau  
+	 *
+	 */
 	@Override
 	public void displayShell()
 	{
@@ -19,6 +27,15 @@ public class Pion extends Piece
 		System.out.print(s);
 	}
 	
+	/**
+	 * Retourne true si le mouvement est possible
+	 * selon les regles de du Pion
+	 * (independamment des autre pieces)
+	 * @param fx (from x) la position d'origine en x du Pion
+	 * @param fy (from y) la position d'origine en y du Pion
+	 * @param tx (to x) la future position  en x du Pion
+	 * @param ty (to y) la future position  en y du Pion
+	 */
 	@Override
 	public boolean isMovePossible(int fx,int fy,int tx,int ty)
 	{
