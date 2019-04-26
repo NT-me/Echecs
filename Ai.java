@@ -26,14 +26,13 @@ public class Ai
 		
 		int move[] = {-1,-1,-1,-1};
 		int rv;
-            System.out.printf("IA\n");
 		if( this.cb.areYouInEchec( this.cb.findKing(this.color), this.color) == true)
 		{
             System.out.printf("%s vous etes en échec, vous devriez bouger !\n",(this.color == 0 ? "Blanc" : "Vert"));
 		}
 		if( this.cb.areYouInMat(this.color) == true )
 		{
-            System.out.printf("%s vous etes en échec et mat, vous devriez bouger !\n",(this.color == 0 ? "Blanc" : "Vert"));
+            System.out.printf("%s vous etes en échec et mat\n",(this.color == 0 ? "Blanc" : "Vert"));
 			this.alive = false;
 			return;
 		}

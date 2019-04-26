@@ -11,6 +11,7 @@ public class Main
 
 		System.out.println("Combien d'IA souhaitez vous ? 1 ou 2 ?");
 		String in = sc.next();
+		//COLOR 0 #########################################################
 		if(in.equals("1")){
 			// Cas ou y'a un joueur
 			System.out.println("Choisis une équipe (0 ou 1) / (noir ou vert)");
@@ -30,17 +31,18 @@ public class Main
 
 			while(p.getAlive() == true && a.getAlive() == true)
 			{
-
 				if (color == 0){ // Cas ou le joueur est blanc donc commence
 					int val = 1;
 					do{
 						val = p.gameLoop();
 						if(val == 1) cb.displayShell();
 					} while (val != 0);
+					if(p.getAlive() == false) break;
 					a.makeMove();
 				}
 				else {
 					a.makeMove();
+					if(a.getAlive() == false) break;
 					int val = 1;
 					do{
 						val = p.gameLoop();
@@ -56,7 +58,7 @@ public class Main
 			} else if(a.getAlive() == false) {
 				System.out.println("You won");
 			}
-		}
+		} //COLOR 2 #########################################################
 		else if (in.equals("2")){//Cas sans joueur
 			Ai Kasparof = new Ai(cb, 1);
 			Ai Mickey = new Ai(cb, 0);

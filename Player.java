@@ -96,7 +96,7 @@ public class Player {
 		}
 		if( this.cb.areYouInMat(this.color) == true )
 		{
-            System.out.printf("%s vous etes en échec et mat, vous devriez bouger !\n",(this.color == 0 ? "Blanc" : "Vert"));
+            System.out.printf("%s vous etes en échec et mat\n",(this.color == 0 ? "Blanc" : "Vert"));
 			this.alive = false;
 			return 0;
 		}

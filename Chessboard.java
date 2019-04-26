@@ -413,7 +413,7 @@ public class Chessboard
 
 		for(int i = -1; i < 2; i++)
 		{
-			for(int j = -1; i < 2; j++)
+			for(int j = -1; j < 2; j++)
 			{
 				int x = k[0] + j;
 				int y = k[1] + i;
@@ -442,7 +442,7 @@ public class Chessboard
 			}
 		}
 
-		if(Somme == 9) return true;
+		if(Somme == 9) return true && this.areYouInEchec(k,c);
 		
 		return false;
 	}
