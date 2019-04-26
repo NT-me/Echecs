@@ -1,4 +1,5 @@
 import java.util.EmptyStackException;
+import java.lang.ArrayIndexOutOfBoundsException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -7,13 +8,13 @@ public class Chessboard
 {
 	private Box board[][];
 
-	private List<Piece> dead;
+	private Stack<Piece> dead;
 
 	private Stack<int[]> pileUndo;
 
 	public Chessboard()
 	{
-		this.dead = new ArrayList<Piece>();
+		this.dead = new Stack<Piece>();
 
 		//ref sur tab 2D de Box
 		Box[][] tmp = new Box[8][8];
@@ -173,6 +174,15 @@ public class Chessboard
 			return false;
 		}
 
+		//ne pas manger ses cooequipiers
+		if(this.board[deplacement[2]][deplacement[3]].getTypePiece() != null){
+			if(this.board[deplacement[2]][deplacement[3]].getColor() == color)
+			{
+				if(!ai) System.out.println("Vous ne pouvez pas manger vos propres pièces");
+				return false;
+			}
+		}
+
 		//cas special de la tour
 		if(this.board[deplacement[0]][deplacement[1]].getTypePiece().equals("Tour")
 			&& !traceLigne(deplacement) ) {
@@ -190,13 +200,14 @@ public class Chessboard
 		//cas spécial du pion
 		//a retravailler
 		if(this.board[deplacement[0]][deplacement[1]].getTypePiece().equals("Pion")){
+			
+			int dx = deplacement[2] - deplacement[0];
+			int dy = deplacement[3] - deplacement[1];
+
 			if ( (deplacement[0] == deplacement[2]) && board[deplacement[2]][deplacement[3]].getTypePiece() != null){
 				if (!ai) System.out.print("Un pion ne peut pas prendre devant lui !\n");
 				return false;
 			}
-
-			int dx = deplacement[2] - deplacement[0];
-			int dy = deplacement[3] - deplacement[1];
 			
 			if( dx == dy ^ dx == -dy)
 			{
@@ -233,14 +244,7 @@ public class Chessboard
 			}
 		} //fin if reine
 		
-		//ne pas manger ses cooequipiers
-		if(this.board[deplacement[2]][deplacement[3]].getTypePiece() != null){
-			if(this.board[deplacement[2]][deplacement[3]].getColor() == color)
-			{
-				if(!ai) System.out.println("Vous ne pouvez pas manger vos propres pièces");
-				return false;
-			}
-		}
+
 
 		return true;
 	}
@@ -254,6 +258,8 @@ public class Chessboard
 		//main move
 		Piece pi = this.board[deplacement[0]][deplacement[1]].getPiece();
 		
+		setUndo(deplacement);
+
 		if (this.board[deplacement[2]][deplacement[3]].getPiece() == null) {
 
 			this.board[deplacement[2]][deplacement[3]].changePiece(pi);
@@ -263,13 +269,18 @@ public class Chessboard
 			//Si il y a une piece dans la case d'arrivée
 			//si c'est une piece adverse
 			//on la stocke dans une liste de pieces mortes 
-			this.dead.add(this.board[deplacement[2]][deplacement[3]].getPiece());
+			this.dead.push(this.board[deplacement[2]][deplacement[3]].getPiece());
+			int[] d = new int[4];
+			d[0] = -1;
+			d[1] = -1;
+			d[2] = 666;
+			d[3] = -1;
+			setUndo(d);
 			this.board[deplacement[2]][deplacement[3]].changePiece(pi);
 			this.board[deplacement[0]][deplacement[1]].changePiece(null);
 
 		}
 
-		setUndo(deplacement);
 		return 0;
 	}
 
@@ -308,21 +319,133 @@ public class Chessboard
 
 		try {
 			dep = this.pileUndo.pop();
-		}catch (EmptyStackException e){
-			System.out.print("Vous ne pouvez pas retourner plus loin");
+		}catch (EmptyStackException e ){
+			System.out.println("Vous ne pouvez pas retourner plus loin");
+			return;
 		}
-		tmp[0] = dep[2];
-		tmp[1] = dep[3];
-		tmp[2] = dep[0];
-		tmp[3] = dep[1];
+		
+		if(dep[0] != -1) {
+			tmp[0] = dep[2];
+			tmp[1] = dep[3];
+			tmp[2] = dep[0];
+			tmp[3] = dep[1];
+		
+			Piece p = this.board[tmp[0]][tmp[1]].getPiece();
+		
+			System.out.printf("-> %d%d%d%d\n", tmp[0], tmp[1], tmp[2], tmp[3]);
+		
+			this.board[tmp[0]][tmp[1]].changePiece(null);
+			this.board[tmp[2]][tmp[3]].changePiece(p);
+		}
+		else
+		{
+			dep = this.pileUndo.pop();
+			
+			tmp[0] = dep[2];
+			tmp[1] = dep[3];
+			tmp[2] = dep[0];
+			tmp[3] = dep[1];
+		
+			Piece p = this.board[tmp[0]][tmp[1]].getPiece();
+		
+			System.out.printf("-> %d%d%d%d\n", tmp[0], tmp[1], tmp[2], tmp[3]);
+		
+			this.board[tmp[0]][tmp[1]].changePiece(null);
+			this.board[tmp[2]][tmp[3]].changePiece(p);
 
-		Piece p = this.board[tmp[0]][tmp[1]].getPiece();
 
-		System.out.printf("-> %d%d%d%d", tmp[0], tmp[1], tmp[2], tmp[3]);
+			try{
+				p = this.dead.pop();
+			} catch (EmptyStackException e ){
+				System.out.println("Vous ne pouvez pas retourner plus loin");
+				return;
+			}
+			
+			this.board[tmp[0]][tmp[1]].changePiece(p);
 
-		this.board[tmp[0]][tmp[1]].changePiece(null);
-		this.board[tmp[2]][tmp[3]].changePiece(p);
+		}
+	}
+	
+	public int[] findKing(int c){
+        //Trouve le roi
+		Piece king;
+        int[] tmp = new int[2];
+        int i = 0, j = 0, flag = 0;
+
+        for (i = 0; i < 8 && flag == 0; i = i+1){
+            for (j = 0; j < 8 && flag == 0; j = j + 1){
+                if (this.board[i][j].getTypePiece() == "Roi" && this.board[i][j].getColor() == c)
+				{
+                    king = this.board[i][j].getPiece();
+                    flag = 1;
+                    tmp[0] = i; tmp[1] = j;
+                }
+            }
+        }
+		
+		return tmp;
 	}
 
+	public boolean areYouInEchec(int[] roi,int c){
+		
+    	int[] tmp = new int[4];
+		tmp[2] = roi[0];
+		tmp[3] = roi[1];
+	
+        for (int h = 0; h<8; ++h){
+            for (int g = 0; g<8; ++g){
+                if (this.board[g][h].getPiece() != null && this.board[g][h].getColor() != c){
+                    tmp[0] = g; tmp[1] = h;
+                    if (this.movePossible(1 - c, tmp, true) == true){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+	public boolean areYouInMat(int c) {
+		
+		int[] k = this.findKing(c);
+
+		int Somme = 0;
+
+		for(int i = -1; i < 2; i++)
+		{
+			for(int j = -1; i < 2; j++)
+			{
+				int x = k[0] + j;
+				int y = k[1] + i;
+				if( ((x < 0)||(x > 7)||(y < 0)||(y > 7)) == false )
+				{
+					//si dans le board
+					if(this.board[x][y].getPiece() == null)
+					{
+						int[] tmpKing = new int[2];
+						tmpKing[0] = x;
+						tmpKing[1] = y;
+						if(areYouInEchec(tmpKing,c) == true)
+						{
+							Somme++;
+						}
+					}
+					else
+					{
+						Somme++;
+					}
+				}
+				else
+				{
+					Somme++;
+				}
+			}
+		}
+
+		if(Somme == 9) return true;
+		
+		return false;
+	}
+	
 }
 

@@ -71,14 +71,15 @@ public class Main
 				{
 					Thread.currentThread().interrupt();
 				}
+				if(Mickey.getAlive() == false) break;
 				Kasparof.makeMove();
 				cb.mutation();
 			}
 			if (Kasparof.getAlive() == false){
-				System.out.println("Les noirs ont gagné");
+				System.out.println("Les blancs ont gagné");
 			}
 			else if (Mickey.getAlive() == false){
-				System.out.println("Les blancs ont gagné");
+				System.out.println("Les verts ont gagné");
 			}
 		}
 
