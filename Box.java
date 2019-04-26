@@ -54,3 +54,4 @@ public class Box
 		return this.piece.getColor();
 	}
 }
+

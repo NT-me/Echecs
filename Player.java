@@ -85,39 +85,9 @@ public class Player {
 	
 	public boolean getAlive()
 	{ return this.alive; }
-
-	public int gameLoop()
+	
+	private void testAlive()
 	{
-		int input[] = null;
-		int rv = -1;
-		if( this.cb.areYouInEchec( this.cb.findKing(this.color), this.color) == true)
-		{
-            System.out.printf("%s vous etes en échec, vous devriez bouger !\n",(this.color == 0 ? "Blanc" : "Vert"));
-		}
-		if( this.cb.areYouInMat(this.color) == true )
-		{
-            System.out.printf("%s vous etes en échec et mat\n",(this.color == 0 ? "Blanc" : "Vert"));
-			this.alive = false;
-			return 0;
-		}
-		do{
-			do{
-				input = this.getInput();
-			} while (input == null);
-
-			if (input[0]==999){
-					System.out.println("Vous avez fait undo");
-					cb.doUndo();
-					return 1;
-			}
-			rv = cb.mouvement(this.color,input,false);
-
-		} while (rv == -1);
-
-		//affichage du tour
-		cb.displayShell();
-		
-		//test de vie
 		this.alive = false;
 		Box[][] board = cb.getBoard();
 		for(int i = 0; i < 8; i++)
@@ -132,6 +102,44 @@ public class Player {
 				}
 			}
 		}
+	}
+
+	public int gameLoop()
+	{
+		this.testAlive();
+		if(this.alive == false) return 0;
+		int input[] = null;
+		int rv = -1;
+		if( this.cb.areYouInEchec( this.cb.findKing(this.color), this.color) == true)
+		{
+            System.out.printf("%s vous etes en échec, vous devriez bouger !\n",(this.color == 0 ? "Blanc" : "Vert"));
+		}
+		if( this.cb.areYouInEchecEtMat(this.color) == true )
+		{
+            System.out.printf("%s vous etes en échec et mat\n",(this.color == 0 ? "Blanc" : "Vert"));
+			this.alive = false;
+			return 0;
+		}
+		do{
+			do{
+				input = this.getInput();
+			} while (input == null);
+
+			if (input[0]==999){
+					System.out.println("Vous avez fait undo");
+					cb.doUndo();
+					cb.doUndo();
+					return 1;
+			}
+			rv = cb.mouvement(this.color,input,false);
+
+		} while (rv == -1);
+
+		//affichage du tour
+		cb.displayShell();
+		
+		this.testAlive();
+
 		return 0;
 	}
 

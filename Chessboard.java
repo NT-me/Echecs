@@ -28,6 +28,7 @@ public class Chessboard
 				tmp[i][j] = new Box(c);
 			}
 		}
+		
 		for(int i = 0; i < 8; i++)
 			tmp[i][1].changePiece(new Pion(0));
 
@@ -48,6 +49,7 @@ public class Chessboard
 		tmp[6][0].changePiece(new Cheval(0));
 		tmp[1][7].changePiece(new Cheval(1));
 		tmp[6][7].changePiece(new Cheval(1));
+		
 
 		tmp[3][0].changePiece(new Roi(0));
 		tmp[4][0].changePiece(new Reine(0));
@@ -332,7 +334,7 @@ public class Chessboard
 		
 			Piece p = this.board[tmp[0]][tmp[1]].getPiece();
 		
-			System.out.printf("-> %d%d%d%d\n", tmp[0], tmp[1], tmp[2], tmp[3]);
+			//System.out.printf("-> %d%d%d%d\n", tmp[0], tmp[1], tmp[2], tmp[3]);
 		
 			this.board[tmp[0]][tmp[1]].changePiece(null);
 			this.board[tmp[2]][tmp[3]].changePiece(p);
@@ -445,6 +447,49 @@ public class Chessboard
 		if(Somme == 9) return true && this.areYouInEchec(k,c);
 		
 		return false;
+	}
+
+	public boolean areYouInEchecEtMat(int c)
+	{
+		if(areYouInMat(c) == false) return false;
+
+		for(int i = 0; i < 8; i++)
+		{
+			for(int j = 0; j < 8; j++)
+			{
+				if(this.board[j][i].getPiece() != null)
+				{
+
+					for(int k = 0; k < 8; k++)
+					{
+						for(int l = 0; l < 8; l++)
+						{
+							int[] dep = new int[4];
+							dep[0] = j;
+							dep[1] = i;
+							dep[2] = l;
+							dep[3] = k;
+							if(this.movePossible(c,dep,true) == true)
+							{
+								this.mouvement(c,dep,true);
+								if(areYouInMat(c) == false)
+								{
+									this.doUndo();
+									return false;
+								}
+								else
+								{
+									this.doUndo();
+								}
+							}//fin if
+						}
+					}
+					
+				}//fin if
+			}
+		} //Fin Pour
+
+	return true;
 	}
 	
 }

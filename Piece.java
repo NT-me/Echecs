@@ -3,10 +3,10 @@ public abstract class Piece {
 
 	public abstract void displayShell();
 
-	/*
-	 * Retourne true si le mouvement est possible
-	 * selon les regles de la piece
-	 * (independamment des autre pieces)
+	/**
+	 *Valide le mouvement en fonction des regles
+	 *
+	 *
 	 */
 	public abstract boolean isMovePossible(int fx, int fy, int tx, int ty);
 
