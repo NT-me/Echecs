@@ -14,7 +14,7 @@ public class Main
 		//COLOR 0 #########################################################
 		if(in.equals("1")){
 			// Cas ou y'a un joueur
-			System.out.println("Choisis une équipe (0 ou 1) / (noir ou vert)");
+			System.out.println("Choisis une équipe (0 ou 1) / (blanc ou vert)");
 
 			in = sc.next();
 			if(in.equals("blanc") || in.equals("0"))
